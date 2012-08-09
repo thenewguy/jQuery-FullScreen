@@ -47,11 +47,14 @@
 	}
 
 	function onFullScreenEvent(callback){
-		$(document).on("fullscreenchange mozfullscreenchange webkitfullscreenchange", function(){
+		function handler() {
 			// The full screen status is automatically
 			// passed to our callback as an argument.
 			callback(fullScreenStatus());
-		});
+		}
+		$(document).bind("fullscreenchange", handler);
+		$(document).bind("mozfullscreenchange", handler);
+		$(document).bind("webkitfullscreenchange", handler);
 	}
 
 	// Adding a new test to the jQuery support object
@@ -77,7 +80,7 @@
 
 		var options = $.extend({
 			'background'      : '#111',
-			'callback'        : $.noop( ),
+			'callback'        : $.noop,
 			'fullscreenClass' : 'fullScreen'
 		}, props),
 
@@ -122,7 +125,9 @@
 			if(!fullScreen){
 				// We have exited full screen.
 			        // Detach event listener
-			        $(document).off( 'fullscreenchange mozfullscreenchange webkitfullscreenchange' );
+					$(document).unbind("fullscreenchange");
+					$(document).unbind("mozfullscreenchange");
+					$(document).unbind("webkitfullscreenchange");
 				// Remove the class and destroy
 				// the temporary div
 
